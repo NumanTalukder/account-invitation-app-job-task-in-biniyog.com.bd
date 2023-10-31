@@ -10,8 +10,7 @@ export const getToken = () => {
   return localStorage.getItem('Authorization')?.split(' ')[1]
 }
 
-// const base_URL = process.env.BASE_URL
-const base_URL = 'https://dev.biniyog.com.bd'
+const base_URL = process.env.REACT_APP_BASE_URL
 
 // Function to make a login request and obtain the token
 export const loginUser = async (username: string, password: string) => {

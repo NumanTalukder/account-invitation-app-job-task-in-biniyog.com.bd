@@ -21,7 +21,6 @@ function PendingInvitations({ token }: InvitationsProps) {
       try {
         const inviteList = await listPendingInvitations(token)
         setInvitations(inviteList)
-        console.log(inviteList)
       } catch (err) {
         setError('Failed to fetch.')
       }

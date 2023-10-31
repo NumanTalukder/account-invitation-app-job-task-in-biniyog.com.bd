@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { listUsersInAccount } from '../lib/apiService'
 import Alert from './Alert'
 import { Typography } from '@mui/material'
-import DataTable from './DataTable'
 
 interface UsersInAccountProps {
   token: string | null
