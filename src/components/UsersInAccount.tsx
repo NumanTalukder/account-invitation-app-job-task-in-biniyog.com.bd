@@ -39,12 +39,16 @@ function UsersInAccount({ token }: UsersInAccountProps) {
       {/* <DataTable users={users} */}
 
       {users?.map((user: any, index: number) => (
-        <li
+        <div
           key={index}
-          className={index % 2 === 0 ? 'bg-gray-100' : 'bg-gray-200'}
+          className={
+            index % 2 === 0
+              ? 'bg-gray-100 w-full text-center hover:shadow-xl hover:scale-105 transition-all p-2'
+              : 'bg-gray-200 w-full text-center hover:shadow-xl hover:scale-105 transition-all p-2'
+          }
         >
           {user.email}
-        </li>
+        </div>
       ))}
 
       {error && (

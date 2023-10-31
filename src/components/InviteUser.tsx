@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Button, TextField, Box } from '@mui/material'
+import { Button, TextField, Typography } from '@mui/material'
 import { inviteUserToAccount } from '../lib/apiService'
 import Alert from './Alert'
 
@@ -9,6 +9,7 @@ interface InviteUserProps {
 
 function InviteUser({ token }: InviteUserProps) {
   const [email, setEmail] = useState('')
+  const [role, setRole] = useState<number[]>([])
   const [success, setSuccess] = useState('')
   const [error, setError] = useState('')
 
@@ -26,38 +27,49 @@ function InviteUser({ token }: InviteUserProps) {
       return
     }
     try {
-      const res = await inviteUserToAccount(token, email)
-      // Handle success
-      if (res.ok) {
-        setSuccess('Invitation Sent')
-      } else {
-        setError('Invitation failed!')
-      }
+      // does not return anything
+      await inviteUserToAccount(token, email, role)
+      setSuccess('Invitation Sent')
     } catch (err) {
       setError('Invitation failed.')
+      console.log(err)
     }
   }
 
   return (
-    <div className='flex flex-col items-center justify-center h-screen gap-1 max-w-md mx-auto p-4 active:outline-none'>
-      <h1 className='text-2xl font-bold mb-4'>Invite User</h1>
-      <Box display='flex' alignItems='center'>
-        <TextField
-          type='email'
-          variant='outlined'
-          label="User's Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          style={{ flex: 1, height: '100%' }}
-        />
-        <Button
-          variant='contained'
-          onClick={handleInvite}
-          style={{ height: '100%' }}
-        >
-          Invite
-        </Button>
-      </Box>
+    <div className='flex flex-col items-center justify-center max-w-md mx-auto h-screen gap-1 p-4'>
+      <Typography variant='h4' className='font-bold text-center mb-4'>
+        Invite User
+      </Typography>
+      <TextField
+        type='email'
+        variant='outlined'
+        label='Email'
+        fullWidth
+        margin='normal'
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        sx={{ height: '36px' }}
+      />
+      <TextField
+        type='number'
+        variant='outlined'
+        label='Role'
+        fullWidth
+        margin='normal'
+        value={role}
+        onChange={(e) => setRole([...role, parseInt(e.target.value, 10)])}
+        sx={{ height: '36px' }}
+      />
+      <Button
+        variant='contained'
+        color='primary'
+        fullWidth
+        style={{ marginTop: '1rem' }}
+        onClick={handleInvite}
+      >
+        Invite
+      </Button>
       {success && (
         <Alert
           type='success'

@@ -73,29 +73,32 @@ export const verifyEmail = async (pin: string) => {
   }
 }
 
-// Function to invite a user to an account
-export const inviteUserToAccount = async (token: string, email: string) => {
-  // Find accountId
-  let userInfo_res = await fetch(`${base_URL}/security/auth/user-details`, {
-    headers: { Authorization: `Bearer ${token}` },
-  })
-  const data = await userInfo_res.json()
-  const accountId = data.id
-
+// Function to invite user
+export const inviteUserToAccount = async (
+  token: string,
+  email: string,
+  role: number[]
+) => {
   try {
-    const response = await fetch(
-      `${base_URL}/security/accounts/${accountId}/invite-user`,
+    // Find account_uuid
+    const userInfoRes = await axios.get(`${base_URL}/security/accounts/`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+
+    const account_uuid = userInfoRes.data[0].uuid
+
+    const response = await axios.post(
+      `${base_URL}/security/accounts/${account_uuid}/invite-user`,
       {
-        method: 'POST',
+        emailInvitedTo: email,
+        rolesInvitedTo: role,
+      },
+      {
         headers: { Authorization: `Bearer ${token}` },
-        body: JSON.stringify({
-          emailInvitedTo: email,
-          rolesInvitedTo: 'manager',
-        }),
       }
     )
-    const data = await response.json()
-    return data
+
+    return response.data
   } catch (error) {
     throw new Error('Invitation failed.')
   }
@@ -103,28 +106,22 @@ export const inviteUserToAccount = async (token: string, email: string) => {
 
 // Function to fetch the list of users in an account
 export const listUsersInAccount = async (token: string) => {
-  console.log(token)
-
   try {
-    // Find accountId
+    // Find account_uuid
 
     // trying through axio as failed to get data by fetch
-    const userInfoResponse = await axios.get(
-      `${base_URL}/security/auth/user-details`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    )
+    const userInfoResponse = await axios.get(`${base_URL}/security/accounts/`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
 
-    const accountId = userInfoResponse.data.id
-    console.log(accountId)
+    const account_uuid = userInfoResponse.data[0].uuid
 
     // Fetch Users in account
     // trying through axio as failed to get data by fetch
     const response = await axios.get(
-      `${base_URL}/security/accounts/${accountId}/users`,
+      `${base_URL}/security/accounts/${account_uuid}/users`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -140,26 +137,22 @@ export const listUsersInAccount = async (token: string) => {
 
 // Function to fetch the list of pending invitations
 export const listPendingInvitations = async (token: string) => {
-  // Find accountId
+  // Find account_uuid
 
   // trying through axio as failed to get data by fetch
-  const userInfoResponse = await axios.get(
-    `${base_URL}/security/auth/user-details`,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  )
+  const userInfoResponse = await axios.get(`${base_URL}/security/accounts/`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
 
-  const accountId = userInfoResponse.data.id
-  console.log(accountId)
+  const account_uuid = userInfoResponse.data[0].uuid
 
   // Fetch Pending users data
   try {
     // trying through axio as failed to get data by fetch
     const response = await axios.get(
-      `${base_URL}/security/accounts/${accountId}/pending-invites`,
+      `${base_URL}/security/accounts/${account_uuid}/pending-invites`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
